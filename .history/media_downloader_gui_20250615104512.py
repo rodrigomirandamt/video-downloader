@@ -123,12 +123,10 @@ class MediaSlayerGUI:
         
         # Combobox - Fonte reduzida
         self.style.configure('Modern.TCombobox',
-                           fieldbackground='#000000',  # black
+                           fieldbackground=colors['slate_700'],
                            foreground=colors['white'],
                            borderwidth=1,
                            font=('Segoe UI', 10))  # Reduzido de 11 para 10
-        # White arrow
-        self.style.map('Modern.TCombobox', fieldbackground=[('readonly', '#000000')], foreground=[('readonly', colors['white'])])
         
         # Botão com gradiente vermelho - Padding reduzido
         self.style.configure('RedGradient.TButton', 
@@ -223,6 +221,12 @@ class MediaSlayerGUI:
         # Desenhar escudo simplificado - Ajustado para novo tamanho
         right_icon_canvas.create_polygon(30, 19, 22, 26, 22, 37, 30, 45, 38, 37, 38, 26, 
                                        fill='white', outline='white')
+        
+        # Subtítulo - Espaçamento reduzido
+        subtitle_label = ttk.Label(title_container, 
+                                 text="Embark on your digital quest to capture and download legendary media from the realms of YouTube and X. Forge your collection!",
+                                 style='Subtitle.TLabel', wraplength=550, justify='center')  # Reduzido wraplength de 600 para 550
+        subtitle_label.pack(pady=(10, 0))  # Reduzido de 15 para 10
         
         # Card principal - Padding reduzido
         card_frame = ttk.Frame(center_frame, style='Card.TFrame', padding="30")  # Reduzido de 40 para 30
@@ -358,25 +362,6 @@ class MediaSlayerGUI:
         self.cancel_btn = ttk.Button(button_frame, text="❌ Cancel Quest", 
                                     command=self.cancel_download, style='RedGradient.TButton')
         self.cancel_btn.pack_forget()
-
-        # --- Download Location Section ---
-        path_section = ttk.Frame(card_content, style='Card.TFrame')
-        path_section.pack(fill=tk.X, pady=(0, 18))
-
-        path_label = ttk.Label(path_section, text="📂 Download Location", style='FieldLabel.TLabel')
-        path_label.pack(anchor=tk.W, pady=(0, 8))
-
-        path_inner = ttk.Frame(path_section, style='Card.TFrame')
-        path_inner.pack(fill=tk.X)
-
-        self.download_path_var = tk.StringVar(value=self.download_path)
-        self.path_entry = ttk.Entry(path_inner, textvariable=self.download_path_var,
-                                   style='Modern.TEntry', font=('Segoe UI', 10))
-        self.path_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, ipady=6)
-
-        browse_btn = ttk.Button(path_inner, text="Browse", command=self.browse_path,
-                                style='RedGradient.TButton')
-        browse_btn.pack(side=tk.LEFT, padx=(8,0))
     
     def on_entry_focus_in(self, event):
         """Remover placeholder"""
@@ -509,8 +494,6 @@ class MediaSlayerGUI:
             messagebox.showerror("Error", "Invalid URL! Please use a YouTube or X (Twitter) URL")
             return
         
-        # Update download path from UI
-        self.download_path = self.download_path_var.get() or self.download_path
         os.makedirs(self.download_path, exist_ok=True)
         
         # Mostrar progresso
@@ -656,14 +639,6 @@ class MediaSlayerGUI:
             self.log_text.configure(state='disabled')
 
         self.root.after(0, _append)
-
-    def browse_path(self):
-        """Open a folder selection dialog and update download path"""
-        from tkinter import filedialog
-        selected = filedialog.askdirectory(initialdir=self.download_path_var.get() or os.getcwd())
-        if selected:
-            self.download_path_var.set(selected)
-            self.download_path = selected
 
     class YTDLogger:
         """Custom logger for yt-dlp that writes to GUI log"""
