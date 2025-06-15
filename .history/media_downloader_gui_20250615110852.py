@@ -195,7 +195,12 @@ class MediaSlayerGUI:
         center_frame.place(relx=0.5, rely=0.5, anchor='center')
         
         # Título principal simples e compacto
-        # Card principal - Padding reduzido
+        title_container = ttk.Frame(center_frame, style='Main.TFrame')
+        title_container.pack(pady=(0, 15))  # Padding reduzido
+        
+        # Título principal sem ícones
+        title_label = ttk.Label(title_container, text="Video Downloader", style='Title.TLabel')
+        title_label.pack()
         
         # Card principal - Padding reduzido
         card_frame = ttk.Frame(center_frame, style='Card.TFrame', padding="30")  # Reduzido de 40 para 30

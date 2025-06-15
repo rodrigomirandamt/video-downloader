@@ -194,20 +194,76 @@ class MediaSlayerGUI:
         center_frame = ttk.Frame(main_frame, style='Main.TFrame')
         center_frame.place(relx=0.5, rely=0.5, anchor='center')
         
-        # Título principal simples e compacto
-        # Card principal - Padding reduzido
+        # Título principal com ícones - Espaçamento reduzido
+        title_container = ttk.Frame(center_frame, style='Main.TFrame')
+        title_container.pack(pady=(0, 20))  # Reduzido de 30 para 20
+        
+        # Container para ícones e título
+        icons_title_frame = ttk.Frame(title_container, style='Main.TFrame')
+        icons_title_frame.pack()
+        
+        # Ícone esquerdo (Sword) - Tamanho reduzido
+        left_icon_canvas = tk.Canvas(icons_title_frame, width=60, height=60,  # Reduzido de 80x80 para 60x60
+                                   bg='#0f172a', highlightthickness=0)
+        left_icon_canvas.pack(side=tk.LEFT, padx=(0, 12))  # Reduzido de 15 para 12
+        
+        # Gradiente vermelho para o ícone - Ajustado para novo tamanho
+        for i in range(60):
+            for j in range(60):
+                if 15 <= i <= 45 and 15 <= j <= 45:  # Área do ícone ajustada
+                    left_icon_canvas.create_rectangle(i, j, i+1, j+1, fill='#dc2626', outline='#dc2626')
+        
+        # Desenhar espada simplificada - Ajustada para novo tamanho
+        left_icon_canvas.create_rectangle(26, 19, 34, 41, fill='white', outline='white')
+        left_icon_canvas.create_rectangle(22, 37, 38, 45, fill='white', outline='white')
+        
+        # Título principal
+        title_label = ttk.Label(icons_title_frame, text="MediaSlayer", style='Title.TLabel')
+        title_label.pack(side=tk.LEFT, padx=(0, 12))  # Reduzido de 15 para 12
+        
+        # Ícone direito (Shield) - Tamanho reduzido
+        right_icon_canvas = tk.Canvas(icons_title_frame, width=60, height=60,  # Reduzido de 80x80 para 60x60
+                                    bg='#0f172a', highlightthickness=0)
+        right_icon_canvas.pack(side=tk.LEFT)
+        
+        # Gradiente azul para o ícone - Ajustado para novo tamanho
+        for i in range(60):
+            for j in range(60):
+                if 15 <= i <= 45 and 15 <= j <= 45:
+                    right_icon_canvas.create_rectangle(i, j, i+1, j+1, fill='#2563eb', outline='#2563eb')
+        
+        # Desenhar escudo simplificado - Ajustado para novo tamanho
+        right_icon_canvas.create_polygon(30, 19, 22, 26, 22, 37, 30, 45, 38, 37, 38, 26, 
+                                       fill='white', outline='white')
         
         # Card principal - Padding reduzido
         card_frame = ttk.Frame(center_frame, style='Card.TFrame', padding="30")  # Reduzido de 40 para 30
         card_frame.pack(pady=(20, 0))  # Reduzido de 30 para 20
         
-        # Header do card - versão compacta
+        # Header do card - Espaçamento reduzido
         card_header = ttk.Frame(card_frame, style='Card.TFrame')
-        card_header.pack(fill=tk.X, pady=(0, 10))  # Altura reduzida
-
-        # Título único
-        card_title = ttk.Label(card_header, text="Download Media", style='CardTitle.TLabel')
+        card_header.pack(fill=tk.X, pady=(0, 20))  # Reduzido de 30 para 20
+        
+        # Ícone de download no header - Tamanho reduzido
+        download_icon_canvas = tk.Canvas(card_header, width=40, height=40,  # Reduzido de 50x50 para 40x40
+                                       bg='#1e293b', highlightthickness=0)
+        download_icon_canvas.pack(pady=(0, 10))  # Reduzido de 15 para 10
+        
+        # Círculo vermelho com gradiente - Ajustado para novo tamanho
+        download_icon_canvas.create_oval(8, 8, 32, 32, fill='#dc2626', outline='#b91c1c', width=2)
+        # Seta de download - Ajustada para novo tamanho
+        download_icon_canvas.create_polygon(20, 14, 16, 22, 24, 22, fill='white')
+        download_icon_canvas.create_rectangle(18, 22, 22, 28, fill='white', outline='white')
+        
+        # Título do card
+        card_title = ttk.Label(card_header, text="Begin Your Quest", style='CardTitle.TLabel')
         card_title.pack()
+        
+        # Descrição do card
+        card_desc = ttk.Label(card_header, 
+                            text="Enter the URL of your target media and select your preferred enchantment",
+                            style='CardDesc.TLabel')
+        card_desc.pack(pady=(3, 0))  # Reduzido de 5 para 3
         
         # Conteúdo do card
         card_content = ttk.Frame(card_frame, style='Card.TFrame')

@@ -195,19 +195,41 @@ class MediaSlayerGUI:
         center_frame.place(relx=0.5, rely=0.5, anchor='center')
         
         # Título principal simples e compacto
-        # Card principal - Padding reduzido
+        title_container = ttk.Frame(center_frame, style='Main.TFrame')
+        title_container.pack(pady=(0, 15))  # Padding reduzido
+        
+        # Título principal sem ícones
+        title_label = ttk.Label(title_container, text="Video Downloader", style='Title.TLabel')
+        title_label.pack()
         
         # Card principal - Padding reduzido
         card_frame = ttk.Frame(center_frame, style='Card.TFrame', padding="30")  # Reduzido de 40 para 30
         card_frame.pack(pady=(20, 0))  # Reduzido de 30 para 20
         
-        # Header do card - versão compacta
+        # Header do card - Espaçamento reduzido
         card_header = ttk.Frame(card_frame, style='Card.TFrame')
-        card_header.pack(fill=tk.X, pady=(0, 10))  # Altura reduzida
-
-        # Título único
-        card_title = ttk.Label(card_header, text="Download Media", style='CardTitle.TLabel')
+        card_header.pack(fill=tk.X, pady=(0, 20))  # Reduzido de 30 para 20
+        
+        # Ícone de download no header - Tamanho reduzido
+        download_icon_canvas = tk.Canvas(card_header, width=40, height=40,  # Reduzido de 50x50 para 40x40
+                                       bg='#1e293b', highlightthickness=0)
+        download_icon_canvas.pack(pady=(0, 10))  # Reduzido de 15 para 10
+        
+        # Círculo vermelho com gradiente - Ajustado para novo tamanho
+        download_icon_canvas.create_oval(8, 8, 32, 32, fill='#dc2626', outline='#b91c1c', width=2)
+        # Seta de download - Ajustada para novo tamanho
+        download_icon_canvas.create_polygon(20, 14, 16, 22, 24, 22, fill='white')
+        download_icon_canvas.create_rectangle(18, 22, 22, 28, fill='white', outline='white')
+        
+        # Título do card
+        card_title = ttk.Label(card_header, text="Begin Your Quest", style='CardTitle.TLabel')
         card_title.pack()
+        
+        # Descrição do card
+        card_desc = ttk.Label(card_header, 
+                            text="Enter the URL of your target media and select your preferred enchantment",
+                            style='CardDesc.TLabel')
+        card_desc.pack(pady=(3, 0))  # Reduzido de 5 para 3
         
         # Conteúdo do card
         card_content = ttk.Frame(card_frame, style='Card.TFrame')
