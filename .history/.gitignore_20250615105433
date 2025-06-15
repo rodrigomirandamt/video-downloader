@@ -1,0 +1,44 @@
+*.py[cod]
+__pycache__/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+pip-wheel-metadata/
+
+# IDE / Editor metadata
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+mediaslayer-debug.log
+
+# pytest cache
+.pytest_cache/
+
+# Tkinter window settings (if saved)
+*.tk*
+
+# Downloads directory (large media files)
+downloads/
+
+# Misc
+*.bak
+*~
+# End of .gitignore
