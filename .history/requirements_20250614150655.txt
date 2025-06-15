@@ -1,0 +1,8 @@
+yt-dlp>=2023.12.30
+tkinter
+pathlib
+threading
+re
+os
+datetime
+time 
