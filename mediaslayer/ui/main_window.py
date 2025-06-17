@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, filedialog, scrolledtext, messagebox
 import os
 import re
+from queue import Queue, Empty
 from .styles import setup_styles
 from ..services.downloader import Downloader
 
@@ -12,15 +13,13 @@ class MainWindow:
         self.root = root
         self.is_downloading = False
         self.download_completed = False
+        self.message_queue = Queue()
         
         self._setup_variables()
         self._setup_window()
-        self.downloader = Downloader(
-            progress_callback=self._update_progress_safe,
-            log_callback=self._add_log_safe,
-            done_callback=self._on_download_done_safe
-        )
+        self.downloader = Downloader(self.message_queue)
         self.create_ui()
+        self._process_queue() # Start the queue processor
 
     def _setup_variables(self):
         """Initialize all Tkinter variables."""
@@ -169,31 +168,37 @@ class MainWindow:
     def _cancel_download(self):
         self.downloader.cancel_download()
 
-    def _on_download_done_safe(self):
-        """A thread-safe method to reset the UI after download completion."""
-        self.download_completed = True
-        self.root.after(0, self._reset_ui)
-
     def _reset_ui(self):
         self.is_downloading = False
+        self.download_completed = True
         self.cancel_btn.pack_forget()
         self.download_btn.pack(fill=tk.X, ipady=8)
         self.root.after(3000, self.progress_frame.pack_forget)
-
-    def _update_progress_safe(self, percent):
-        """Thread-safe method to update the progress bar."""
-        self.root.after(0, lambda: self.progress_var.set(percent))
-        self.root.after(0, lambda: self.progress_percent.config(text=f"{int(percent)}%"))
-
-    def _add_log_safe(self, message):
-        """Thread-safe method to add a message to the log."""
-        self.root.after(0, lambda: self._add_log(message))
 
     def _add_log(self, message):
         self.log_text.configure(state='normal')
         self.log_text.insert(tk.END, message + "\n")
         self.log_text.yview(tk.END)
         self.log_text.configure(state='disabled')
+
+    def _process_queue(self):
+        """Process messages from the downloader thread."""
+        try:
+            while not self.message_queue.empty():
+                msg = self.message_queue.get_nowait()
+                msg_type = msg.get('type')
+
+                if msg_type == 'log':
+                    self._add_log(msg.get('text', ''))
+                elif msg_type == 'progress':
+                    progress_val = msg.get('value', 0)
+                    self.progress_var.set(progress_val)
+                    self.progress_percent.config(text=f"{int(progress_val)}%")
+                elif msg_type == 'done':
+                    self._reset_ui()
+
+        finally:
+            self.root.after(100, self._process_queue)
 
     def _browse_path(self):
         selected = filedialog.askdirectory(initialdir=self.download_path_var.get())
