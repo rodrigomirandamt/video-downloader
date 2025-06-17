@@ -9,6 +9,13 @@ import sys
 import subprocess
 import shutil
 from pathlib import Path
+import importlib.util
+
+ROOT = Path(__file__).resolve().parent.parent
+SPEC_PATH = ROOT / 'packaging' / 'MediaSlayer.spec'
+ICON_SCRIPT_PATH = ROOT / 'packaging' / 'create_icon.py'
+
+sys.path.insert(0, str(Path(__file__).parent))
 
 def check_dependencies():
     """Check if required dependencies are available"""
@@ -43,9 +50,12 @@ def create_icon():
     print("\n🎨 Creating app icon...")
     
     try:
-        from create_icon import create_app_icon
-        icon_path = create_app_icon()
+        spec = importlib.util.spec_from_file_location('create_icon', ICON_SCRIPT_PATH)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        create_app_icon = module.create_app_icon
         
+        icon_path = create_app_icon()
         if icon_path and os.path.exists(icon_path):
             print(f"✅ Icon created: {icon_path}")
             return icon_path
@@ -60,7 +70,7 @@ def update_spec_file(icon_path):
     """Update the spec file with the icon path"""
     print(f"\n📝 Updating spec file with icon: {icon_path}")
     
-    spec_file = "MediaSlayer.spec"
+    spec_file = str(SPEC_PATH)
     
     if not os.path.exists(spec_file):
         print(f"❌ Spec file {spec_file} not found!")
@@ -104,7 +114,7 @@ def build_app():
     
     try:
         # Run PyInstaller with the spec file
-        cmd = [sys.executable, "-m", "PyInstaller", "--clean", "MediaSlayer.spec"]
+        cmd = [sys.executable, "-m", "PyInstaller", "--clean", "--noconfirm", str(SPEC_PATH)]
         result = subprocess.run(cmd, capture_output=True, text=True)
         
         if result.returncode == 0:
