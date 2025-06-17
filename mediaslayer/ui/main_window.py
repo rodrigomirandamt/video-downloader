@@ -184,21 +184,41 @@ class MainWindow:
     def _process_queue(self):
         """Process messages from the downloader thread."""
         try:
+            logs_to_add = []
+            progress_val = None
+            done_signal = False
+
             while not self.message_queue.empty():
                 msg = self.message_queue.get_nowait()
                 msg_type = msg.get('type')
 
                 if msg_type == 'log':
-                    self._add_log(msg.get('text', ''))
+                    logs_to_add.append(msg.get('text', ''))
                 elif msg_type == 'progress':
+                    # Keep only the latest progress value this cycle
                     progress_val = msg.get('value', 0)
-                    self.progress_var.set(progress_val)
-                    self.progress_percent.config(text=f"{int(progress_val)}%")
                 elif msg_type == 'done':
-                    self._reset_ui()
+                    done_signal = True
+                elif msg_type == 'error':
+                    # Show an immediate pop-up; remember to call from the Tk thread.
+                    message = msg.get('text', 'Unknown error')
+                    messagebox.showerror("Download failed", message)
+
+            # Batch-insert all accumulated logs in a single widget state change
+            if logs_to_add:
+                self._add_log("\n".join(logs_to_add))
+
+            # Apply the latest progress value (if any)
+            if progress_val is not None:
+                self.progress_var.set(progress_val)
+                self.progress_percent.config(text=f"{int(progress_val)}%")
+
+            if done_signal:
+                self._reset_ui()
 
         finally:
-            self.root.after(100, self._process_queue)
+            # Schedule next poll; we can afford to be a little slower now that updates are batched
+            self.root.after(150, self._process_queue)
 
     def _browse_path(self):
         selected = filedialog.askdirectory(initialdir=self.download_path_var.get())

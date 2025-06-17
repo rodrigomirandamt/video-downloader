@@ -1,6 +1,96 @@
 # MediaSlayer - Video Downloader
 
-A modern, user-friendly video downloader with support for YouTube, X (Twitter), and other platforms.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/yt-dlp/yt-dlp/master/support/logo.svg" alt="yt-dlp logo" width="150">
+</p>
+
+<p align="center">
+  A modern, user-friendly desktop application for downloading videos from YouTube, X (Twitter), and hundreds of other websites.
+</p>
+
+---
+
+## 📝 Changelog / Recent Improvements
+
+- **2024-06**: Major stability and UX improvements:
+  - The Execute Download button is now always responsive—no more repeated clicks needed.
+  - UI is much smoother, even for long downloads, thanks to batched log updates and throttled progress reporting.
+  - Clear error dialogs now appear if a download fails, so you always know what went wrong.
+  - Multiple downloads in a row work reliably without needing to restart the app.
+
+## ✨ Features
+
+- **Modern UI**: Clean, beautiful interface inspired by gaming aesthetics.
+- **Broad Compatibility**: Supports hundreds of sites, powered by the robust `yt-dlp` engine.
+- **Format Selection**: Choose between video (MP4, WebM) and audio-only (MP3, WAV) formats.
+- **Quality Options**: Select your preferred video quality, from 360p up to 1080p.
+- **Stable & Responsive**: UI remains fast and responsive, even for long downloads, thanks to multi-threading, batched log updates, and throttled progress reporting.
+- **Reliable Download Button**: The Execute Download button always works—no more repeated clicks or freezes.
+- **Clear Error Feedback**: If a download fails, you get a clear error dialog explaining why.
+- **Cross-Platform**: Built with Python and Tkinter, it runs on macOS, Windows, and Linux.
+
+## 🚀 Quick Start
+
+#### 1. Prerequisites
+- [Python 3.7+](https://www.python.org/downloads/)
+- [ffmpeg](https://ffmpeg.org/download.html): Required for merging video and audio streams (especially for high-quality formats). The easiest way to install it is with a package manager like Homebrew on macOS (`brew install ffmpeg`) or Chocolatey on Windows (`choco install ffmpeg`).
+
+#### 2. Installation
+Clone the repository and install the required Python packages:
+```bash
+git clone https://github.com/your-username/video-downloader.git # Please replace with the actual URL
+cd video-downloader
+pip install -r requirements.txt
+```
+
+#### 3. Running the Application
+Launch the app from the root directory of the project:
+```bash
+python -m mediaslayer.main
+```
+
+## 🎮 How to Use
+
+1.  **Paste URL**: Paste a video URL from a supported platform (YouTube, X, etc.).
+2.  **Choose Options**: Select your desired format and quality.
+3.  **Download**: Click "Execute Download Quest"—the button is always responsive, and you'll see instant progress and logs.
+4.  **Error Handling**: If something goes wrong, a clear error dialog will appear.
+5.  **Find Your File**: The downloaded media will appear in your system's "Downloads" folder.
+
+## 🛠️ Project Structure
+
+The project was refactored into a modular architecture to separate concerns and improve maintainability.
+
+```
+video-downloader/
+├── mediaslayer/              # Main application package
+│   ├── ui/                   # User Interface modules
+│   │   ├── main_window.py    # - Defines the main window layout and widgets
+│   │   └── styles.py         # - Configures the custom ttk styles
+│   ├── services/             # Background services
+│   │   └── downloader.py     # - Handles all yt-dlp logic and threading
+│   ├── app.py                # - Core application class, orchestrates UI and services
+│   └── main.py               # - Main entry point for the application
+├── assets/                   # Icons and other static assets
+├── scripts/                  # Build and utility scripts
+├── README.md                 # This file
+└── requirements.txt          # Python dependencies
+```
+
+## 📦 Building a Standalone App
+
+For convenience, you can bundle the application into a single executable file using `PyInstaller`. Build scripts and spec files are included.
+
+-   **On macOS**: Run `./build_app.sh`
+-   **On Windows**: (Requires `pywin32` and `winshell`) Run the equivalent build script.
+
+The final executable will be located in the `dist/` directory.
+
+## 🙏 Acknowledgments
+
+-   **yt-dlp**: The powerful and versatile engine that makes this application possible.
+-   **Python/Tkinter**: For the native, cross-platform GUI framework.
+-   **PyInstaller**: For creating standalone application bundles.
 
 ## Project Structure
 

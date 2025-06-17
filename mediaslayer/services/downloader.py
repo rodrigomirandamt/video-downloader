@@ -17,6 +17,9 @@ class Downloader:
         self.message_queue = message_queue
         self.cancel_requested = False
         self.download_thread = None
+        # Keep track of the last percentage value we have already reported so we can
+        # throttle progress updates and avoid overwhelming the Tk event loop.
+        self._last_percent_reported: float | None = None
 
     def _send_message(self, msg_type, **kwargs):
         """Sends a message to the UI thread's queue."""
@@ -40,8 +43,15 @@ class Downloader:
                 except (ValueError, TypeError):
                     percent = None
             
+            # Throttle progress messages to at most 1-percentage-point increments.
             if percent is not None:
-                self._send_message('progress', value=percent)
+                if (
+                    self._last_percent_reported is None
+                    or percent - self._last_percent_reported >= 1
+                    or percent >= 100
+                ):
+                    self._last_percent_reported = percent
+                    self._send_message('progress', value=percent)
 
         elif d['status'] == 'finished':
             self._send_message('progress', value=100)
@@ -58,13 +68,17 @@ class Downloader:
 
         except Exception as e:
             if "cancelled by user" not in str(e).lower():
+                # Send both a log line and a dedicated error message so the UI can surface it.
                 self._send_message('log', text=f"ERROR: {e}")
+                self._send_message('error', text=str(e))
         finally:
             self._send_message('done')
 
     def start_download(self, url, download_path, format_options, platform):
         """Starts the video download in a new thread."""
         self.cancel_requested = False
+        # Reset progress throttle marker for new download
+        self._last_percent_reported = None
 
         ydl_opts = {
             'outtmpl': os.path.join(download_path, '%(uploader)s - %(title)s.%(ext)s'),
