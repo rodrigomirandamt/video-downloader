@@ -1,7 +1,7 @@
 # MediaSlayer - Video Downloader
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/yt-dlp/yt-dlp/master/support/logo.svg" alt="yt-dlp logo" width="150">
+  <img src="assets/ytdlp.png" alt="yt-dlp logo" width="150">
 </p>
 
 <p align="center">
@@ -72,19 +72,56 @@ video-downloader/
 │   ├── app.py                # - Core application class, orchestrates UI and services
 │   └── main.py               # - Main entry point for the application
 ├── assets/                   # Icons and other static assets
-├── scripts/                  # Build and utility scripts
+├── icons/                    # App icon PNGs and .icns
+├── packaging/                # All build/packaging scripts and spec file
+│   ├── MediaSlayer.spec      # PyInstaller spec file (macOS)
+│   ├── build_app.sh          # Bash build script (macOS)
+│   ├── build_macos_app.py    # Python build script (macOS)
+│   └── create_icon.py        # Icon generator script
+├── dist/                     # Output folder for built apps
+├── venv/                     # (Optional) Python virtual environment
 ├── README.md                 # This file
 └── requirements.txt          # Python dependencies
 ```
 
-## 📦 Building a Standalone App
+## 📦 Building a Standalone App (macOS)
 
-For convenience, you can bundle the application into a single executable file using `PyInstaller`. Build scripts and spec files are included.
+All macOS build and packaging logic now lives in the `packaging/` folder. You no longer need to run or edit build scripts from the project root.
 
--   **On macOS**: Run `./build_app.sh`
--   **On Windows**: (Requires `pywin32` and `winshell`) Run the equivalent build script.
+### 1. Prerequisites
+- Python 3.7+ (recommended: 3.11 or newer)
+- [ffmpeg](https://ffmpeg.org/download.html) (install via Homebrew: `brew install ffmpeg`)
+- (Recommended) Create and activate a virtual environment:
+  ```bash
+  python3 -m venv venv
+  source venv/bin/activate
+  pip install -r requirements.txt
+  ```
 
-The final executable will be located in the `dist/` directory.
+### 2. Build the macOS App
+From the project root, run:
+```bash
+# Bash build (recommended for most users)
+./packaging/build_app.sh
+
+# Or, Python build helper (for advanced/CI use)
+python packaging/build_macos_app.py
+```
+- The app bundle will appear in `dist/MediaSlayer.app`.
+- If you want to install it system-wide:
+  ```bash
+  cp -R dist/MediaSlayer.app /Applications/
+  ```
+- To create a DMG for distribution, use the Python build script (it will prompt or create one automatically).
+
+### 3. Customizing the Build
+- To change the app icon, edit or regenerate with `python packaging/create_icon.py`.
+- To change packaging logic, edit files in `packaging/` only.
+- The PyInstaller spec file is now at `packaging/MediaSlayer.spec` and is path-agnostic.
+
+### 4. Cleaning Up
+- Temporary build artifacts are in `build/` and `dist/` (except for the final `.app`).
+- You can safely delete `build/`, `dist/MediaSlayer` (not `.app`), and `__pycache__/` at any time.
 
 ## 🙏 Acknowledgments
 

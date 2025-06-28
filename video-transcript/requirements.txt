@@ -1,0 +1,2 @@
+youtube-transcript-api ß
+yt-dlp>=2023.7.6

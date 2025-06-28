@@ -1,0 +1,39 @@
+Here are a few relatively light‐lift paths to get a truly native‐macOS look:
+
+1. **BeeWare Toga**
+
+   * A Python toolkit that wraps native widgets on each platform.
+   * You write pure Python, but on macOS it uses Cocoa controls under the hood.
+   * Package with Briefcase into a standard `.app`.
+
+2. **PySide6 (Qt6) with macOS styling**
+
+   * Qt6’s QMacStyle gives you native appearance for buttons, menus, dialogs.
+   * You can still code in Python, but you get the San Francisco font, unified toolbar, dark-mode support.
+   * Bundle via PyInstaller or Qt’s macdeployqt.
+
+3. **SwiftUI “front end” + Python backend**
+
+   * Rewrite just the UI in SwiftUI (Xcode), calling your existing Python logic via [PythonKit](https://github.com/pvieito/PythonKit).
+   * Gives you full SwiftUI power (sidebar, native date pickers, text fields) with minimal business-logic rewrite.
+
+4. **Flutter Desktop**
+
+   * Single codebase for macOS, Windows, Linux.
+   * macOS build uses native menus and titlebar integration.
+   * Dart is easy to pick up if you already know Python.
+
+5. **Electron with macOS HIG**
+
+   * If you don’t mind JS, Electron can be themed to match Apple’s guidelines.
+   * Lots of existing templates (e.g. macOS menubar apps).
+
+**Plus, polish regardless of framework:**
+
+* Use SF Pro as your font.
+* Adopt the system menu bar (no custom “File/Help” in-window).
+* Support Dark Mode and accent‐color tinting.
+* Add a proper app icon and Assets.car.
+* Code-sign and notarize so it installs like a “real” app.
+
+Which of these sounds closest to your comfort zone?
